@@ -22,7 +22,9 @@ final public Symbol name;
 transient final AtomicReference<IPersistentMap> mappings = new AtomicReference<IPersistentMap>();
 transient final AtomicReference<IPersistentMap> aliases = new AtomicReference<IPersistentMap>();
 
-final static ConcurrentHashMap<Symbol, Namespace> namespaces = new ConcurrentHashMap<Symbol, Namespace>();
+//final static ConcurrentHashMap<Symbol, Namespace> namespaces = new ConcurrentHashMap<Symbol, Namespace>();
+
+final static NamespaceContainer namespaces = new NamespaceContainer();
 
 public String toString(){
 	return name.toString();
