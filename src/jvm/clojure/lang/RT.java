@@ -947,23 +947,23 @@ static public Number box(byte x){
 }
 
 static public Number box(short x){
-	return new Short(x);//Num.from(x);
+	return (Number)x;//Num.from(x);
 }
 
 static public Number box(int x){
-	return new Integer(x);//Num.from(x);
+	return (Number)x;//Num.from(x);
 }
 
 static public Number box(long x){
-	return new Long(x);//Num.from(x);
+	return (Number)x;//Num.from(x);
 }
 
 static public Number box(float x){
-	return new Float(x);//Num.from(x);
+	return (Number)x;//Num.from(x);
 }
 
 static public Number box(double x){
-	return new Double(x);//Num.from(x);
+	return (Number)x;//Num.from(x);
 }
 
 static public char charCast(Object x){

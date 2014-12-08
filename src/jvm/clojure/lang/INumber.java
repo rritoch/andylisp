@@ -26,6 +26,8 @@ public interface INumber {
 	public boolean equiv(Number y);
 
 	public boolean lt(Number y);
+	
+	public boolean gt(Number y);
 
 	public boolean lte(Number y);
 

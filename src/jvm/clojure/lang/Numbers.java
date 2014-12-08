@@ -1098,7 +1098,10 @@ final static class NumberOps implements Ops{
 	}
 
 	public boolean lt(Number x, Number y){
-		return ((INumber)x).lt(y);
+		if (x instanceof INumber) {
+			return ((INumber)x).lt(y);
+		}
+		return ((INumber)y).gt(x);
 	}
 
 	public boolean lte(Number x, Number y){
