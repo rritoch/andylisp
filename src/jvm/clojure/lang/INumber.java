@@ -33,7 +33,9 @@ public interface INumber {
 
 	public boolean gte(Number y);
 
-	//public Number subtract(Number y);
+	public Number subtract(Number y);
+	
+	public Number subtractP(Number y);
 	
 	public Number negate();
 
@@ -47,4 +49,5 @@ public interface INumber {
 
 	public Number decP();
 }
+
 

@@ -41,7 +41,10 @@ static interface Ops{
 
 	public Number add(Number x, Number y);
 	public Number addP(Number x, Number y);
-
+	
+	public Number subtract(Number x, Number y);
+	public Number subtractP(Number x, Number y);
+	
 	public Number multiply(Number x, Number y);
 	public Number multiplyP(Number x, Number y);
 
@@ -76,6 +79,9 @@ static abstract class OpsP implements Ops{
 		return multiply(x, y);
 	}
 
+	public Number subtractP(Number x, Number y) {
+		return minus(x, y);
+	}
 	public Number negateP(Number x){
 		return negate(x);
 	}
@@ -136,6 +142,9 @@ static public Number addP(Object x, Object y){
 
 static public Number minus(Object x, Object y){
 	Ops yops = ops(y);
+	if (yops == NUMBER_OPS) {
+		return ops(x).combine(yops).subtract((Number)x, (Number)y);
+	}
 	return ops(x).combine(yops).add((Number)x, yops.negate((Number)y));
 }
 
@@ -482,6 +491,15 @@ final static class LongOps implements Ops{
 			return BIGINT_OPS.multiply(x, y);
 		return num(ret);
 	}
+	
+	final public Number subtract(Number x, Number y) {
+		return num(Numbers.minus(x.longValue(),y.longValue()));
+	}
+	
+	final public Number subtractP(Number x, Number y) {
+		return num(Numbers.minusP(x.longValue(),y.longValue()));
+	}
+	
 	static long gcd(long u, long v){
 		while(v != 0)
 			{
@@ -661,6 +679,14 @@ final static class DoubleOps extends OpsP{
 	public Number dec(Number x){
 		return Double.valueOf(x.doubleValue() - 1);
 	}
+	
+	final public Number subtract(Number x, Number y) {
+		return num(Numbers.minus(x.doubleValue(),y.doubleValue()));
+	}
+	
+	final public Number subtractP(Number x, Number y) {
+		return num(Numbers.minusP(x.doubleValue(),y.doubleValue()));
+	}
 }
 
 final static class RatioOps extends OpsP{
@@ -720,6 +746,15 @@ final static class RatioOps extends OpsP{
 		Ratio ry = toRatio(y);
 		Number ret = divide(ry.numerator.multiply(rx.denominator)
 				.add(rx.numerator.multiply(ry.denominator))
+				, ry.denominator.multiply(rx.denominator));
+		return normalizeRet(ret, x, y);
+	}
+	
+	final public Number subtract(Number x, Number y){
+		Ratio rx = toRatio(x);
+		Ratio ry = toRatio(y);
+		Number ret = divide(ry.numerator.multiply(rx.denominator)
+				.subtract(rx.numerator.multiply(ry.denominator))
 				, ry.denominator.multiply(rx.denominator));
 		return normalizeRet(ret, x, y);
 	}
@@ -851,6 +886,10 @@ final static class BigIntOps extends OpsP{
 	final public Number add(Number x, Number y){
         return toBigInt(x).add(toBigInt(y));
 	}
+	
+	final public Number subtract(Number x, Number y){
+        return toBigInt(x).subtract(toBigInt(y));
+	}
 
 	final public Number multiply(Number x, Number y){
         return toBigInt(x).multiply(toBigInt(y));
@@ -954,6 +993,13 @@ final static class BigDecimalOps extends OpsP{
 		       : toBigDecimal(x).add(toBigDecimal(y), mc);
 	}
 
+	final public Number subtract(Number x, Number y){
+		MathContext mc = (MathContext) MATH_CONTEXT.deref();
+		return mc == null
+		       ? toBigDecimal(x).subtract(toBigDecimal(y))
+		       : toBigDecimal(x).subtract(toBigDecimal(y), mc);
+	}
+	
 	final public Number multiply(Number x, Number y){
 		MathContext mc = (MathContext) MATH_CONTEXT.deref();
 		return mc == null
@@ -1073,6 +1119,14 @@ final static class NumberOps implements Ops{
 		return ((INumber)x).addP(y);
 	}
 
+	final public Number subtract(Number x, Number y) {
+		return ((INumber)x).subtract(y);
+	}
+	
+	final public Number subtractP(Number x, Number y) {
+		return ((INumber)x).subtractP(y);
+	}
+	
 	final public Number multiply(Number x, Number y){
 		return ((INumber)x).multiply(y);
 	}
