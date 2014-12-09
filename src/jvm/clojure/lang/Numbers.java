@@ -30,7 +30,7 @@ static interface Ops{
 	Ops opsWith(BigIntOps x);
 
 	Ops opsWith(BigDecimalOps x);
-	
+
 	Ops opsWith(NumberOps x);
 
 	public boolean isZero(Number x);
@@ -41,10 +41,10 @@ static interface Ops{
 
 	public Number add(Number x, Number y);
 	public Number addP(Number x, Number y);
-	
+
 	public Number subtract(Number x, Number y);
 	public Number subtractP(Number x, Number y);
-	
+
 	public Number multiply(Number x, Number y);
 	public Number multiplyP(Number x, Number y);
 
@@ -265,7 +265,7 @@ static BigInteger toBigInteger(Object x){
 	if(x instanceof BigInteger)
 		return (BigInteger) x;
 	else if(x instanceof BigInt)
-		return ((BigInt) x).toBigInteger();	
+		return ((BigInt) x).toBigInteger();
 	else
 		return BigInteger.valueOf(((Number) x).longValue());
 }
@@ -446,7 +446,7 @@ final static class LongOps implements Ops{
 	final public Ops opsWith(BigDecimalOps x){
 		return BIGDECIMAL_OPS;
 	}
-	
+
 	final public Ops opsWith(NumberOps x) {
 		return NUMBER_OPS;
 	}
@@ -488,15 +488,15 @@ final static class LongOps implements Ops{
 			return BIGINT_OPS.multiply(x, y);
 		return num(ret);
 	}
-	
+
 	final public Number subtract(Number x, Number y) {
 		return num(Numbers.minus(x.longValue(),y.longValue()));
 	}
-	
+
 	final public Number subtractP(Number x, Number y) {
 		return num(Numbers.minusP(x.longValue(),y.longValue()));
 	}
-	
+
 	static long gcd(long u, long v){
 		while(v != 0)
 			{
@@ -615,7 +615,7 @@ final static class DoubleOps extends OpsP{
 	final public Ops opsWith(NumberOps x) {
 		return NUMBER_OPS;
 	}
-	
+
 	public boolean isZero(Number x){
 		return x.doubleValue() == 0;
 	}
@@ -676,11 +676,11 @@ final static class DoubleOps extends OpsP{
 	public Number dec(Number x){
 		return Double.valueOf(x.doubleValue() - 1);
 	}
-	
+
 	final public Number subtract(Number x, Number y) {
 		return num(Numbers.minus(x.doubleValue(),y.doubleValue()));
 	}
-	
+
 	final public Number subtractP(Number x, Number y) {
 		return num(Numbers.minusP(x.doubleValue(),y.doubleValue()));
 	}
@@ -714,7 +714,7 @@ final static class RatioOps extends OpsP{
 	final public Ops opsWith(NumberOps x) {
 		return NUMBER_OPS;
 	}
-	
+
 	public boolean isZero(Number x){
 		Ratio r = (Ratio) x;
 		return r.numerator.signum() == 0;
@@ -746,7 +746,7 @@ final static class RatioOps extends OpsP{
 				, ry.denominator.multiply(rx.denominator));
 		return normalizeRet(ret, x, y);
 	}
-	
+
 	final public Number subtract(Number x, Number y){
 		Ratio rx = toRatio(x);
 		Ratio ry = toRatio(y);
@@ -858,7 +858,7 @@ final static class BigIntOps extends OpsP{
 	final public Ops opsWith(NumberOps x) {
 		return NUMBER_OPS;
 	}
-	
+
 	public boolean isZero(Number x){
 		BigInt bx = toBigInt(x);
 		if(bx.bipart == null)
@@ -883,7 +883,7 @@ final static class BigIntOps extends OpsP{
 	final public Number add(Number x, Number y){
         return toBigInt(x).add(toBigInt(y));
 	}
-	
+
 	final public Number subtract(Number x, Number y){
         return toBigInt(x).subtract(toBigInt(y));
 	}
@@ -967,7 +967,7 @@ final static class BigDecimalOps extends OpsP{
 	final public Ops opsWith(NumberOps x) {
 		return NUMBER_OPS;
 	}
-	
+
 	public boolean isZero(Number x){
 		BigDecimal bx = (BigDecimal) x;
 		return bx.signum() == 0;
@@ -996,7 +996,7 @@ final static class BigDecimalOps extends OpsP{
 		       ? toBigDecimal(x).subtract(toBigDecimal(y))
 		       : toBigDecimal(x).subtract(toBigDecimal(y), mc);
 	}
-	
+
 	final public Number multiply(Number x, Number y){
 		MathContext mc = (MathContext) MATH_CONTEXT.deref();
 		return mc == null
@@ -1075,7 +1075,7 @@ final static class NumberOps implements Ops{
 	final public Ops opsWith(NumberOps x){
 		return this;
 	}
-	
+
 	final public Ops opsWith(LongOps x){
 		return LONG_OPS;
 	}
@@ -1119,11 +1119,11 @@ final static class NumberOps implements Ops{
 	final public Number subtract(Number x, Number y) {
 		return ((INumber)x).subtract(y);
 	}
-	
+
 	final public Number subtractP(Number x, Number y) {
 		return ((INumber)x).subtractP(y);
 	}
-	
+
 	final public Number multiply(Number x, Number y){
 		return ((INumber)x).multiply(y);
 	}
