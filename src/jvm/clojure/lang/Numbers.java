@@ -142,10 +142,7 @@ static public Number addP(Object x, Object y){
 
 static public Number minus(Object x, Object y){
 	Ops yops = ops(y);
-	if (yops == NUMBER_OPS) {
-		return ops(x).combine(yops).subtract((Number)x, (Number)y);
-	}
-	return ops(x).combine(yops).add((Number)x, yops.negate((Number)y));
+	return ops(x).combine(yops).subtract((Number)x, (Number)y);
 }
 
 static public Number minusP(Object x, Object y){
@@ -753,8 +750,8 @@ final static class RatioOps extends OpsP{
 	final public Number subtract(Number x, Number y){
 		Ratio rx = toRatio(x);
 		Ratio ry = toRatio(y);
-		Number ret = divide(ry.numerator.multiply(rx.denominator)
-				.subtract(rx.numerator.multiply(ry.denominator))
+		Number ret = divide(rx.numerator.multiply(ry.denominator)
+				.subtract(ry.numerator.multiply(rx.denominator))
 				, ry.denominator.multiply(rx.denominator));
 		return normalizeRet(ret, x, y);
 	}
@@ -3999,7 +3996,7 @@ static public double divide(long x, double y){
 }
 
 static public Number divide(long x, long y){
-	return divide((Number) (Long.valueOf(x)), (Number) (Long.valueOf(y)));
+	return divide((Number)x, (Number)y);
 }
 
 static public boolean lt(long x, Object y){
