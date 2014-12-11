@@ -7,8 +7,12 @@
   :prep-tasks ["compile" "javac"]
   :resource-paths ["src/resources"]
   :dependencies [[org.clojure/clojure "1.7.0-master-SNAPSHOT"]
-                 [org.codehaus.jsr166-mirror/jsr166y "1.7.0"]
+                 
+                 ;[org.codehaus.jsr166-mirror/extra166y "1.7.0"]
                  [org.clojure/test.generative "0.5.1" :exclusions [org.clojure/clojure]]
                  [org.clojure/test.check "0.5.9" :exclusions [org.clojure/clojure]]]
                   
-  :aot :all)
+  :aot :all
+  
+  
+  :profiles {:provided {:dependencies [[org.codehaus.jsr166-mirror/jsr166y "1.7.0"]]}})

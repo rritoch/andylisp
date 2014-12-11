@@ -6,6 +6,8 @@
 ;   the terms of this license.
 ;   You must not remove this notice, or any other, from this software.
 
+(comment
+  
 (ns ^{:doc "DEPRECATED Wrapper of the ForkJoin library (JSR-166)."
        :author "Rich Hickey"}
     clojure.parallel)
@@ -247,4 +249,4 @@ pvec.
 (time (preduce + 0 (par v :map-index *)))
 (time (preduce + 0 (par v :map  #(* % %))))
 (time (reduce + 0 (map #(* % %) v)))
-)
+))
