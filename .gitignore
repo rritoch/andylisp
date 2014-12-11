@@ -8,3 +8,5 @@ maven-classpath.properties
 /bin
 /.classpath
 /.project
+/.lein-repl-history
+/.nrepl-port
