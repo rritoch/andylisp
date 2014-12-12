@@ -14,5 +14,5 @@
   
    :main clojure.main
   
-   :profiles {:provided {:dependencies [[org.clojure/clojure "1.7.0-master-SNAPSHOT"]
+   :profiles {:provided {:dependencies [[org.clojure/clojure "1.7.0-alpha4"]
                                         [org.codehaus.jsr166-mirror/jsr166y "1.7.0"]]}})

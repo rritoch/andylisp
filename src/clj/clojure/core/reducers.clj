@@ -17,7 +17,7 @@
   (:require [clojure.walk :as walk]))
 
 (alias 'core 'clojure.core)
-(set! *warn-on-reflection* true)
+;(set! *warn-on-reflection* true)
 
 ;;;;;;;;;;;;;; some fj stuff ;;;;;;;;;;
 
