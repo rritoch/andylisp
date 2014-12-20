@@ -29,7 +29,16 @@ public class NamespaceContainer implements Serializable {
 	
 	
 	final static InheritableThreadLocal<ConcurrentHashMap<Symbol, Namespace>> NAMESPACE_CONTAINER = new InheritableThreadLocal<ConcurrentHashMap<Symbol, Namespace>>() {
+		
+		boolean inherited = false;
+		
 		protected ConcurrentHashMap<Symbol, Namespace> childValue(ConcurrentHashMap<Symbol, Namespace> parentValue) {
+			//System.out.println("NAMESPACE_CONTAINER.childValue()");
+			if (inherited) {
+				return this.get();
+			}
+			inherited = true;
+
 			if (parentValue == null) { 
 				this.set(root); 
 				return root;
@@ -39,11 +48,19 @@ public class NamespaceContainer implements Serializable {
 		}
 		
 		protected ConcurrentHashMap<Symbol, Namespace> initialValue() {
+			//System.out.println("NAMESPACE_CONTAINER.initialValue()");
 			return root;
 		}
 		
 	};
 	
+	public static ConcurrentHashMap<Symbol, Namespace> getRoot() {
+		return root;
+	}
+	
+	public static ConcurrentHashMap<Symbol, Namespace> getCurrent() {
+		return NAMESPACE_CONTAINER.get();
+	}
 	
 	//final static Var NAMESPACE_CONTAINER = Var.create(root).setDynamic();
 	
