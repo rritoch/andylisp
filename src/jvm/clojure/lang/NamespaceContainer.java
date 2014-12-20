@@ -59,6 +59,7 @@ public class NamespaceContainer implements Serializable {
 		
 	};
 	
+	/*
 	public static ConcurrentHashMap<Symbol, Namespace> getRoot() {
 		return root;
 	}
@@ -66,6 +67,7 @@ public class NamespaceContainer implements Serializable {
 	public static ConcurrentHashMap<Symbol, Namespace> getCurrent() {
 		return NAMESPACE_CONTAINER.get();
 	}
+	*/
 	
 	//final static Var NAMESPACE_CONTAINER = Var.create(root).setDynamic();
 	
