@@ -21,12 +21,14 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.AbstractCollection;
+import clojure.lang.Var;
 
 public class NamespaceContainer implements Serializable {
 	
 	final static ConcurrentHashMap<Symbol, Namespace> root = new ConcurrentHashMap<Symbol, Namespace>();
 	
-	final static InheritableThreadLocal<ConcurrentHashMap<Symbol, Namespace>> current = new InheritableThreadLocal<ConcurrentHashMap<Symbol, Namespace>>() {
+	
+	final static InheritableThreadLocal<ConcurrentHashMap<Symbol, Namespace>> NAMESPACE_CONTAINER = new InheritableThreadLocal<ConcurrentHashMap<Symbol, Namespace>>() {
 		protected ConcurrentHashMap<Symbol, Namespace> childValue(ConcurrentHashMap<Symbol, Namespace> parentValue) {
 			if (parentValue == null) { 
 				this.set(root); 
@@ -42,6 +44,9 @@ public class NamespaceContainer implements Serializable {
 		
 	};
 	
+	
+	//final static Var NAMESPACE_CONTAINER = Var.create(root).setDynamic();
+	
 	final static ThreadLocal<IPersistentList> prev = new ThreadLocal<IPersistentList>() {
 		protected IPersistentList initialValue() {
 			return PersistentList.EMPTY;
@@ -51,19 +56,19 @@ public class NamespaceContainer implements Serializable {
 	final static Symbol CLOJURE_NS = Symbol.create("clojure.core");
 	
 	public Collection<Namespace> values() {
-		return current.get().values();
+		return ((ConcurrentHashMap<Symbol, Namespace>)NAMESPACE_CONTAINER.get()).values();
 	}
 	
 	public Namespace get(Symbol name) {
-		return current.get().get(name);	
+		return ((ConcurrentHashMap<Symbol, Namespace>)NAMESPACE_CONTAINER.get()).get(name);	
 	}
 	
 	public Namespace putIfAbsent (Symbol name, Namespace ns) {
-		return current.get().putIfAbsent(name, ns);
+		return ((ConcurrentHashMap<Symbol, Namespace>)NAMESPACE_CONTAINER.get()).putIfAbsent(name, ns);
 	}
 	
 	public Namespace remove(Symbol name) {
-		return current.get().remove(name);
+		return ((ConcurrentHashMap<Symbol, Namespace>)NAMESPACE_CONTAINER.get()).remove(name);
 	}
 	
 	public static NamespaceContainer.Ref enter(Ref r) {
@@ -77,9 +82,14 @@ public class NamespaceContainer implements Serializable {
 			// Assuming deps are already loaded if current namespace is there.
 		
 			// Do enter....
-			ConcurrentHashMap<Symbol, Namespace> c = current.get();
+			ConcurrentHashMap<Symbol, Namespace> c = ((ConcurrentHashMap<Symbol, Namespace>)NAMESPACE_CONTAINER.get());
 			if (c != root) prev.set((IPersistentList)((IPersistentCollection)prev.get()).cons(c));
-			current.set(r.value);
+			
+			//if (null == NAMESPACE_CONTAINER.getThreadBinding()) {
+			//	Var.pushThreadBindings(RT.map(NAMESPACE_CONTAINER,true));
+			//} else {
+				NAMESPACE_CONTAINER.set(r.value);
+			//}
 			return r;
 		}
 	}
@@ -102,13 +112,18 @@ public class NamespaceContainer implements Serializable {
 		
 		if (((Counted)pq).count() > 0) {
 			if (pq.peek() == null) {
-				current.set(root);
+				NAMESPACE_CONTAINER.set(root);
 			} else {
-				current.set((ConcurrentHashMap<Symbol, Namespace>)pq.peek());
+				NAMESPACE_CONTAINER.set((ConcurrentHashMap<Symbol, Namespace>)pq.peek());
 			}
 			prev.set((IPersistentList)pq.pop());
 		} else {
-			current.set(root);
+			NAMESPACE_CONTAINER.set(root);
+			/*
+			if (null != NAMESPACE_CONTAINER.getThreadBinding()) {
+				Var.popThreadBindings();
+			}
+			*/
 		}
 	}
 	
