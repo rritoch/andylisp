@@ -21,6 +21,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.AbstractCollection;
+
 import clojure.lang.Var;
 
 public class NamespaceContainer implements Serializable {
@@ -37,18 +38,25 @@ public class NamespaceContainer implements Serializable {
 			}
 		}; 
 		
+		public void set(ConcurrentHashMap<Symbol, Namespace> cur) {
+			super.set(cur);
+			inherited.set(true);
+		}
+		
 		protected ConcurrentHashMap<Symbol, Namespace> childValue(ConcurrentHashMap<Symbol, Namespace> parentValue) {
 			//System.out.println("NAMESPACE_CONTAINER.childValue()");
 			if (inherited.get()) {
-				return this.get();
+				//System.out.println("NAMESPACE_CONTAINER.childValue() CACHED");
+				return get();
 			}
-			inherited.set(true);
+			//System.out.println("NAMESPACE_CONTAINER.childValue()");
+			//inherited.set(true);
 
 			if (parentValue == null) { 
-				this.set(root); 
+				set(root); 
 				return root;
 			}
-			this.set(parentValue);
+			set(parentValue);
 		    return parentValue;
 		}
 		
@@ -153,6 +161,31 @@ public class NamespaceContainer implements Serializable {
 		}
 	}
 	
+	public static Env getEnv() {
+		return new Env(NAMESPACE_CONTAINER.get(), prev.get());
+	}
+	
+	
+	public static void setEnv(Env env) {
+		NAMESPACE_CONTAINER.set(env.current);
+		prev.set(env.prev);
+	}
+	
+	public static void setParentEnv(Env env) {
+		NAMESPACE_CONTAINER.set(env.current);
+		prev.set(PersistentList.EMPTY);
+	}
+	
+	
+	public static Namespace findNamespace(Env env, Symbol sym) {
+		return env.findNamespace(sym);
+	}
+	
+	public void linkNamespace(Env env, Namespace ns) {
+		env.linkNamespace(ns.getName(), ns);
+	}
+	
+	
 	public static PersistentHashSet depends(Namespace ns, boolean deep) {
 		PersistentHashSet out;
 		PersistentHashSet in = (PersistentHashSet)PersistentHashSet.EMPTY.cons(ns);
@@ -183,10 +216,28 @@ public class NamespaceContainer implements Serializable {
 		return out;
 	}
 	
-	static class Ref {
+	public static class Ref {
 		private final ConcurrentHashMap<Symbol, Namespace> value;
 		Ref(ConcurrentHashMap<Symbol, Namespace> value) {
 			this.value = value;
+		}
+	}
+	
+	public static class Env {
+		private final ConcurrentHashMap<Symbol, Namespace> current;
+		private final IPersistentList prev;
+		Env(ConcurrentHashMap<Symbol, Namespace> current, IPersistentList prev) {
+			this.current = current;
+			this.prev = prev;
+		}
+		
+		protected Namespace findNamespace(Symbol sym) {
+			return current.get(sym);
+		}
+		
+		protected void linkNamespace(Symbol sym, Namespace ns) {
+			current.remove(sym);
+			current.putIfAbsent(sym,ns);
 		}
 	}
 	
